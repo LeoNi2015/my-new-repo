@@ -1,0 +1,44 @@
+# 工作流的名称
+name: Node.js CI
+
+# 触发工作流的事件
+on:
+  # 当有代码推送到 main 分支时触发
+  push:
+    branches: [ "main" ]
+  # 当有针对 main 分支的 Pull Request 时触发
+  pull_request:
+    branches: [ "main" ]
+
+# 工作流包含的任务 (jobs)
+jobs:
+  # 定义一个名为 "build" 的任务
+  build:
+    # 指定任务运行的虚拟环境，这里使用最新的 Ubuntu 系统
+    runs-on: ubuntu-latest
+
+    # 定义任务的步骤 (steps)
+    steps:
+    # 第 1 步：检出代码
+    # 使用社区共享的 action 'actions/checkout' 来获取你仓库的代码
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    # 第 2 步：设置 Node.js 环境
+    # 使用 'actions/setup-node' 来安装指定版本的 Node.js
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        # 指定 Node.js 的版本
+        node-version: '20'
+        # 使用 npm 的缓存来加速后续的依赖安装
+        cache: 'npm'
+
+    # 第 3 步：安装项目依赖
+    # 'run' 关键字用来执行命令行命令
+    - name: Install dependencies
+      run: npm install
+
+    # 第 4 步：运行测试
+    - name: Run tests
+      run: npm test
